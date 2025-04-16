@@ -13,7 +13,6 @@ public class LoveCanvas extends GameCanvas {
     public static int rOld, gOld, bOld;
     public static MIDlet currentMidlet;
 
-
     protected LoveCanvas(boolean suppressKeyEvents, MIDlet current) {
         super(suppressKeyEvents);
         String mainFile;
@@ -22,14 +21,19 @@ public class LoveCanvas extends GameCanvas {
         try {
             mainFile = ResourceReader.readResourceToString("game/main.lua");
         } catch (Exception ignored) {
-            mainFile = "";
+            mainFile = null;
+           currentMidlet.notifyDestroyed();
         }
         rOld = 0;
         gOld = 0;
         bOld = 0;
         globals = JmePlatform.standardGlobals();
         engine = LuaValue.tableOf();
+
+        // Definition of Love2D functions
         engine.set("graphics", LoveGraphics.create());
+        engine.set("window", LoveWindow.create());
+
         globals.set("love", engine);
 
         globals.load(mainFile).call();
@@ -44,11 +48,13 @@ public class LoveCanvas extends GameCanvas {
 
     public void paint(Graphics g) {
         graphics = g;
+
         // Draw background before main draw event
         setColor(0, 0, 0);
         g.fillRect(0, 0, getWidth(), getHeight());
         setColor(255, 255, 255);
         globals.load("love.draw()").call();
+        //g.drawString(g.getClipWidth()+"+"+g.getClipHeight(), g.getClipWidth()/2, g.getClipHeight()/2, Graphics.TOP | Graphics.HCENTER);
         repaint();
     }
 }
