@@ -1,4 +1,6 @@
 Love2D port for J2ME powered devices
+<img src="logo.png" width="32">
+
 ---
 
 ## 🚀 Features
