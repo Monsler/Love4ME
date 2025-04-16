@@ -15,9 +15,7 @@
 
 | Drawing Rectangle |
 | ----------------- |
-| ![example](example.png) |
-
-| ![example](example2.jpg) |
+| ![example](example.png) | | ![example](example2.jpg) |
 
 ---
 
