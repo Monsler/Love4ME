@@ -48,6 +48,104 @@ public class LoveGraphics {
         }
     }
 
+    public static class PrintfFunc extends VarArgFunction {
+        public Varargs invoke(Varargs args) {
+            String text = args.arg(1).checkjstring();
+            int x = args.arg(2).checkint();
+            int y = args.arg(3).checkint();
+            int limit = args.arg(4).optint(1000);
+            String align = args.arg(5).optjstring("left").toLowerCase();
+
+            if (!align.equals("left") && !align.equals("right") && !align.equals("center")) {
+                align = "left";
+            }
+
+            String[] lines = wrapText(text, limit);
+
+            for (int i = 0; i < lines.length; i++) {
+                int lineY = y + i * 20;
+                int lineX = x;
+
+                if (align.equals("center")) {
+                    lineX += limit / 2;
+                } else if (align.equals("right")) {
+                    lineX += limit;
+                }
+
+                LoveCanvas.graphics.drawString(lines[i], lineX, lineY, Graphics.TOP | getAlignFlag(align));
+            }
+
+            return LuaValue.NIL;
+        }
+
+        private String[] wrapText(String text, int limit) {
+            String[] tempLines = new String[50];
+            int lineCount = 0;
+
+            char[] chars = text.toCharArray();
+            int len = chars.length;
+
+            StringBuffer currentLine = new StringBuffer();
+            String currentWord = "";
+            int currentWidth = 0;
+
+            for (int i = 0; i <= len; i++) {
+                char c = (i < len) ? chars[i] : ' ';
+                if (c == ' ') {
+                    int wordWidth = currentWord.length() * 10;
+
+                    if (currentWidth + wordWidth > limit && currentLine.length() > 0) {
+                        tempLines[lineCount++] = currentLine.toString();
+                        currentLine = new StringBuffer(currentWord);
+                        currentWidth = wordWidth;
+                    } else {
+                        if (currentLine.length() > 0) {
+                            currentLine.append(" ");
+                            currentWidth += 10;
+                        }
+                        currentLine.append(currentWord);
+                        currentWidth += wordWidth;
+                    }
+
+                    currentWord = "";
+                } else {
+                    currentWord += c;
+                }
+            }
+
+            if (currentLine.length() > 0) {
+                tempLines[lineCount++] = currentLine.toString();
+            }
+            
+            String[] result = new String[lineCount];
+            System.arraycopy(tempLines, 0, result, 0, lineCount);
+
+            return result;
+        }
+
+
+        private int getAlignFlag(String align) {
+            if (align.equals("center")) {
+                return Graphics.HCENTER;
+            } else if (align.equals("right")) {
+                return Graphics.RIGHT;
+            } else {
+                return Graphics.LEFT;
+            }
+        }
+    }
+
+    public static class LineFunc extends VarArgFunction {
+        public Varargs invoke(Varargs args) {
+            int x1 = args.arg(1).checkint();
+            int y1 = args.arg(2).checkint();
+            int x2 = args.arg(3).checkint();
+            int y2 = args.arg(4).checkint();
+            LoveCanvas.graphics.drawLine(x1, y1, x2, y2);
+            return LuaValue.NIL;
+        }
+    }
+
     public static class SetColor extends VarArgFunction {
         public Varargs invoke(Varargs args) {
             float r = args.arg(1).checkint()*255;
@@ -87,8 +185,10 @@ public class LoveGraphics {
         graphicsTable.set("setColor", new SetColor());
         graphicsTable.set("circle", new CircleFunc());
         graphicsTable.set("print", new PrintFunc());
+        graphicsTable.set("line", new LineFunc());
         graphicsTable.set("newImage", new NewImage());
         graphicsTable.set("draw", new draw());
+        graphicsTable.set("printf", new PrintfFunc());
         return graphicsTable;
     }
 }

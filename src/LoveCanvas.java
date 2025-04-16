@@ -13,6 +13,10 @@ public class LoveCanvas extends GameCanvas {
     public static int rOld, gOld, bOld;
     public static MIDlet currentMidlet;
 
+    public static int fps;
+    private int frames;
+    private long lastTime = System.currentTimeMillis();
+
     protected LoveCanvas(boolean suppressKeyEvents, MIDlet current) {
         super(suppressKeyEvents);
         String mainFile;
@@ -33,6 +37,8 @@ public class LoveCanvas extends GameCanvas {
         // Definition of Love2D functions
         engine.set("graphics", LoveGraphics.create());
         engine.set("window", LoveWindow.create());
+        engine.set("timer", LoveTimer.create());
+        engine.set("system", LoveSystem.create());
 
         globals.set("love", engine);
 
@@ -48,13 +54,19 @@ public class LoveCanvas extends GameCanvas {
 
     public void paint(Graphics g) {
         graphics = g;
+        ++frames;
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastTime >= 1000) {
+            fps = frames;
+            frames = 0;
+            lastTime = currentTime;
+        }
 
         // Draw background before main draw event
         setColor(0, 0, 0);
         g.fillRect(0, 0, getWidth(), getHeight());
         setColor(255, 255, 255);
         globals.load("love.draw()").call();
-        //g.drawString(g.getClipWidth()+"+"+g.getClipHeight(), g.getClipWidth()/2, g.getClipHeight()/2, Graphics.TOP | Graphics.HCENTER);
         repaint();
     }
 }

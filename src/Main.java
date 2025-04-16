@@ -2,8 +2,9 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.midlet.MIDlet;
 
 public class Main extends MIDlet {
+    public static Display display;
     protected void startApp() {
-        Display display = Display.getDisplay(this);
+        display = Display.getDisplay(this);
         display.setCurrent(new LoveCanvas(false, this));
     }
 
