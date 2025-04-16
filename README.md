@@ -7,7 +7,7 @@
 - 📦 MIDlet-compatible runtime
 - 🖼 Basic 2D graphics: `rectangle`, `line`, `circle`, etc.
 - 🎮 Works on Series 40, Symbian, and Java-enabled phones
-- 🧪 Tested on KEmulator and real devices
+- 🧪 Tested on real devices
 
 ---
 
