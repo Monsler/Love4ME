@@ -1,18 +1,17 @@
 import javax.microedition.lcdui.Display;
 import javax.microedition.midlet.MIDlet;
-import javax.microedition.midlet.MIDletStateChangeException;
 
 public class Main extends MIDlet {
-    protected void startApp() throws MIDletStateChangeException {
+    protected void startApp() {
         Display display = Display.getDisplay(this);
-        display.setCurrent(new LoveCanvas(false));
+        display.setCurrent(new LoveCanvas(false, this));
     }
 
     protected void pauseApp() {
 
     }
 
-    protected void destroyApp(boolean b) throws MIDletStateChangeException {
-
+    protected void destroyApp(boolean b) {
+        LoveCanvas.globals.load("love.quit()").call();
     }
 }
