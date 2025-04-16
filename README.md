@@ -25,8 +25,7 @@
 ## 📂 File Structure
 
 ```
-Love2D-J2ME/
-├── res/                  # Resources (fonts, images)
+Love4ME/
 ├── src/                  # Java source code
 ├── outputs/              # Compiled classes
 ├── outputs/game/         # Lua game scripts
