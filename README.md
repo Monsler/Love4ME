@@ -15,7 +15,7 @@ Love2D port for J2ME powered devices
 
 | Drawing Rectangle |
 | ----------------- |
-| ![example](screenshots/example.png) |
+| ![example](example.png) |
 
 ---
 
