@@ -13,11 +13,13 @@
 
 ## 📸 Screenshots
 
-| Drawing Rectangle |            | Drawing Rectangle |
-| ----------------- |            | ----------------- |
-| ![example](example.png) |      | ![example](example2.jpg) |
+| Drawing Rectangle |            
+| ----------------- |           
+| ![example](example.png) |      
 
-
+| Drawing Image |
+| ----------------- |
+| ![example](example2.jpg) |
 ---
 
 ## 📂 File Structure
