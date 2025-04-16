@@ -25,9 +25,8 @@ Love2D port for J2ME powered devices
 Love2D-J2ME/
 ├── res/                  # Resources (fonts, images)
 ├── src/                  # Java source code
-├── build/                # Compiled classes
-├── dist/                 # JAR and JAD output
-├── lua/                  # Lua game scripts
+├── outputs/              # Compiled classes
+├── outputs/game/         # Lua game scripts
 │   └── main.lua
 ├── logo.png              # Project logo
 └── README.md             # This file
