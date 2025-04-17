@@ -187,6 +187,26 @@ public class LoveGraphics {
         }
     }
 
+    public static class ArcFunc extends VarArgFunction {
+        public Varargs invoke(Varargs args) {
+            String mode = args.arg(1).checkjstring();
+            int x = args.arg(2).checkint();
+            int y = args.arg(3).checkint();
+            int radius = args.arg(4).checkint();
+            int angle1 = args.arg(5).checkint();
+            int angle2 = args.arg(6).checkint();
+            int segments = args.arg(7).checkint();
+
+            if (mode.equals("fill")) {
+                LoveCanvas.graphics.fillArc(x, y, radius, angle1, angle2, segments);
+            } else if (mode.equals("line")) {
+                LoveCanvas.graphics.drawArc(x, y, radius, angle1, angle2, segments);
+            }
+
+            return LuaValue.NIL;
+        }
+    }
+
     public static class draw extends VarArgFunction {
         public Varargs invoke(Varargs args) {
             LuaValue tImage = args.arg(1).checktable();
@@ -204,6 +224,7 @@ public class LoveGraphics {
         graphicsTable.set("rectangle", new RectFunc());
         graphicsTable.set("setColor", new SetColor());
         graphicsTable.set("circle", new CircleFunc());
+        graphicsTable.set("arc", new ArcFunc());
         graphicsTable.set("print", new PrintFunc());
         graphicsTable.set("line", new LineFunc());
         graphicsTable.set("newImage", new NewImage());
