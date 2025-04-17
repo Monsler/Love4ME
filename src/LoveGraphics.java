@@ -1,10 +1,11 @@
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
+import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
+import org.luaj.vm2.lib.ZeroArgFunction;
 
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-import java.io.IOException;
 
 public class LoveGraphics {
     public static class RectFunc extends VarArgFunction {
@@ -164,13 +165,32 @@ public class LoveGraphics {
             } catch (Exception e) {
                 LoveCanvas.currentMidlet.notifyDestroyed();
             }
-            return LuaValue.userdataOf(image);
+            LuaValue out = LuaValue.tableOf();
+            final Image finalImage = image;
+            out.set("_image", new ZeroArgFunction() {
+                public LuaValue call() {
+                    return LuaValue.userdataOf(finalImage);
+                }
+            });
+            out.set("getWidth", new OneArgFunction() {
+                public LuaValue call(LuaValue luaValue) {
+                    return LuaValue.valueOf(finalImage.getWidth());
+                }
+            });
+            out.set("getHeight", new OneArgFunction() {
+                public LuaValue call(LuaValue luaValue) {
+                    return LuaValue.valueOf(finalImage.getHeight());
+                }
+            });
+
+            return out;
         }
     }
 
     public static class draw extends VarArgFunction {
         public Varargs invoke(Varargs args) {
-            Image image = (Image) args.arg(1).checkuserdata();
+            LuaValue tImage = args.arg(1).checktable();
+            Image image = (Image) tImage.get("_image").call().checkuserdata();
             int x = args.arg(2).checkint();
             int y = args.arg(3).checkint();
             LoveCanvas.graphics.drawImage(image, x, y, Graphics.TOP | Graphics.HCENTER);
