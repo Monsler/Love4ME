@@ -1,4 +1,5 @@
 import org.luaj.vm2.Globals;
+import org.luaj.vm2.Lua;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jme.JmePlatform;
 
@@ -34,15 +35,24 @@ public class LoveCanvas extends GameCanvas {
         globals = JmePlatform.standardGlobals();
         engine = LuaValue.tableOf();
 
-        // Definition of Love2D functions
+        // Definition of Love4ME functions
         engine.set("graphics", LoveGraphics.create());
         engine.set("window", LoveWindow.create());
         engine.set("timer", LoveTimer.create());
         engine.set("system", LoveSystem.create());
+        engine.set("event", LoveEvent.create());
 
         globals.set("love", engine);
 
         globals.load(mainFile).call();
+    }
+
+    public void keyPressed(int key) {
+        LuaValue love = globals.get("love");
+        if (!love.get("keypressed").isfunction()) {
+            return;
+        }
+        love.get("keypressed").call(LuaValue.valueOf(key));
     }
 
     public static void setColor(int r, int g, int b) {
