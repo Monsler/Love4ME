@@ -41,6 +41,7 @@ public class LoveCanvas extends GameCanvas {
         engine.set("timer", LoveTimer.create());
         engine.set("system", LoveSystem.create());
         engine.set("event", LoveEvent.create());
+        engine.set("thread", LoveThread.create());
 
         globals.set("require", new RequireFunction());
         globals.set("love", engine);
