@@ -24,7 +24,7 @@ public class LoveTimer {
     public static LuaValue create() {
         LuaValue timerTable = LuaValue.tableOf();
         timerTable.set("sleep", new SleepFunc());
-        timerTable.set("getFps", new GetFps());
+        timerTable.set("getFPS", new GetFps());
         return timerTable;
     }
 }

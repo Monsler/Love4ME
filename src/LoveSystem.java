@@ -21,11 +21,6 @@ public class LoveSystem {
         LuaValue systemTable = LuaValue.tableOf();
         systemTable.set("getOS", new getOs());
         systemTable.set("vibrate", new vibrate());
-        systemTable.set("fire", LuaValue.valueOf(LoveCanvas.FIRE));
-        systemTable.set("down", LuaValue.valueOf(LoveCanvas.DOWN));
-        systemTable.set("left", LuaValue.valueOf(LoveCanvas.LEFT));
-        systemTable.set("right", LuaValue.valueOf(LoveCanvas.RIGHT));
-        systemTable.set("up", LuaValue.valueOf(LoveCanvas.UP));
         return systemTable;
     }
 }

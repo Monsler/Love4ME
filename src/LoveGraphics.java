@@ -149,9 +149,9 @@ public class LoveGraphics {
 
     public static class SetColor extends VarArgFunction {
         public Varargs invoke(Varargs args) {
-            float r = args.arg(1).checkint()*255;
-            float g = args.arg(2).checkint()*255;
-            float b = args.arg(3).checkint()*255;
+            double r = args.arg(1).checkdouble()*255;
+            double g = args.arg(2).checkdouble()*255;
+            double b = args.arg(3).checkdouble()*255;
             LoveCanvas.setColor((int)r, (int)g, (int)b);
             return LuaValue.NIL;
         }

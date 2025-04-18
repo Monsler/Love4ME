@@ -27,7 +27,7 @@ public class LoveCanvas extends GameCanvas {
             mainFile = ResourceReader.readResourceToString("game/main.lua");
         } catch (Exception ignored) {
             mainFile = null;
-           currentMidlet.notifyDestroyed();
+            currentMidlet.notifyDestroyed();
         }
         rOld = 0;
         gOld = 0;
@@ -42,17 +42,96 @@ public class LoveCanvas extends GameCanvas {
         engine.set("system", LoveSystem.create());
         engine.set("event", LoveEvent.create());
 
+        globals.set("require", new RequireFunction());
         globals.set("love", engine);
 
         globals.load(mainFile).call();
+        globals.load("love.load()").call();
+    }
+
+    private String getKey(int key) {
+        String keyString;
+        switch (key) {
+            case -5:
+                keyString = "ok";
+                break;
+            case -3:
+                keyString = "left";
+                break;
+            case -4:
+                keyString = "right";
+                break;
+            case -2:
+                keyString = "down";
+                break;
+            case -1:
+                keyString = "up";
+                break;
+            case -10:
+                keyString = "accept";
+                break;
+            case 49:
+                keyString = "1";
+                break;
+            case 50:
+                keyString = "2";
+                break;
+            case 51:
+                keyString = "3";
+                break;
+            case 52:
+                keyString = "4";
+                break;
+            case 53:
+                keyString = "5";
+                break;
+            case 54:
+                keyString = "6";
+                break;
+            case 55:
+                keyString = "7";
+                break;
+            case 56:
+                keyString = "8";
+                break;
+            case 57:
+                keyString = "9";
+                break;
+            case 42:
+                keyString = "star";
+                break;
+            case 48:
+                keyString = "0";
+                break;
+            case 35:
+                keyString = "hashtag";
+                break;
+            default:
+                keyString = "unknown";
+                break;
+        }
+        return keyString;
     }
 
     public void keyPressed(int key) {
         LuaValue love = globals.get("love");
+
         if (!love.get("keypressed").isfunction()) {
             return;
         }
-        love.get("keypressed").call(LuaValue.valueOf(key));
+        love.get("keypressed").call(LuaValue.valueOf(getKey(key)));
+    }
+
+    public void keyReleased(int key) {
+        LuaValue love = globals.get("love");
+        if (!love.get("keyreleased").isfunction()) {
+            return;
+        }
+        love.get("keyreleased").call(LuaValue.valueOf(getKey(key)));
+    }
+
+    public static void restart() {
+        Main.display.setCurrent(new LoveCanvas(false, currentMidlet));
     }
 
     public static void setColor(int r, int g, int b) {
