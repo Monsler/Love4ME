@@ -13,6 +13,7 @@ public class LoveCanvas extends GameCanvas {
     public static Graphics graphics;
     public static int rOld, gOld, bOld;
     public static MIDlet currentMidlet;
+    public static LoveCanvas currentCanvas;
 
     public static int fps;
     private int frames;
@@ -22,6 +23,7 @@ public class LoveCanvas extends GameCanvas {
         super(suppressKeyEvents);
         String mainFile;
         currentMidlet = current;
+        currentCanvas = this;
         setFullScreenMode(true);
         try {
             mainFile = ResourceReader.readResourceToString("game/main.lua");
@@ -132,7 +134,8 @@ public class LoveCanvas extends GameCanvas {
     }
 
     public static void restart() {
-        Main.display.setCurrent(new LoveCanvas(false, currentMidlet));
+        currentCanvas = new LoveCanvas(false, currentMidlet);
+        Main.display.setCurrent(currentCanvas);
     }
 
     public static void setColor(int r, int g, int b) {
