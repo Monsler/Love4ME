@@ -1,7 +1,7 @@
-local image = love.graphics.newImage('love4me.png')
+local image
 
 function love.load()
-  
+  image = love.graphics.newImage('love4me.png')
 end
 
 function love.draw()
