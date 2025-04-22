@@ -8,7 +8,7 @@ import javax.microedition.lcdui.AlertType;
 
 public class LoveWindow {
     public static class GetDimensionsFunc extends VarArgFunction {
-        public Varargs invoke(Varargs args) {
+        public Varargs invoke() {
             if (LoveCanvas.graphics != null) {
                 return LuaValue.varargsOf(LuaValue.valueOf(LoveCanvas.graphics.getClipWidth()), LuaValue.valueOf(LoveCanvas.graphics.getClipHeight()));
             }

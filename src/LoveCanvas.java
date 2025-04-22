@@ -14,6 +14,7 @@ public class LoveCanvas extends GameCanvas {
     public static int rOld, gOld, bOld;
     public static MIDlet currentMidlet;
     public static LoveCanvas currentCanvas;
+    public static int touchX, touchY;
 
     public static int fps;
     private int frames;
@@ -36,18 +37,15 @@ public class LoveCanvas extends GameCanvas {
         bOld = 0;
         globals = JmePlatform.standardGlobals();
         engine = LuaValue.tableOf();
+        touchX = 0;
+        touchY = 0;
 
         // Definition of Love4ME functions
-        engine.set("graphics", LoveGraphics.create());
-        engine.set("window", LoveWindow.create());
-        engine.set("timer", LoveTimer.create());
-        engine.set("system", LoveSystem.create());
-        engine.set("event", LoveEvent.create());
-        engine.set("thread", LoveThread.create());
-
+        requireDependencies(engine);
         globals.set("require", new RequireFunction());
         globals.set("love", engine);
 
+        //Execution of main.lua
         globals.load(mainFile).call();
         globals.load("love.load()").call();
     }
@@ -117,20 +115,46 @@ public class LoveCanvas extends GameCanvas {
     }
 
     public void keyPressed(int key) {
-        LuaValue love = globals.get("love");
 
-        if (!love.get("keypressed").isfunction()) {
+        if (!engine.get("keypressed").isfunction()) {
             return;
         }
-        love.get("keypressed").call(LuaValue.valueOf(getKey(key)));
+        engine.get("keypressed").call(LuaValue.valueOf(getKey(key)));
+    }
+
+    public void pointerPressed(int x, int y) {
+        touchX = x;
+        touchY = y;
+        if (!engine.get("touchpressed").isfunction()) {
+            return;
+        }
+        engine.get("touchpressed").call(LuaValue.valueOf(touchX),LuaValue.valueOf(touchY));
+    }
+
+    public static void requireDependencies(LuaValue loveTable) {
+        loveTable.set("graphics", LoveGraphics.create());
+        loveTable.set("window", LoveWindow.create());
+        loveTable.set("touch", LoveTouch.create());
+        loveTable.set("system", LoveSystem.create());
+        loveTable.set("thread", LoveThread.create());
+        loveTable.set("timer", LoveTimer.create());
+        loveTable.set("event", LoveEvent.create());
+    }
+
+    public void pointerReleased(int x, int y) {
+        touchX = x;
+        touchY = y;
+        if (!engine.get("touchreleased").isfunction()) {
+            return;
+        }
+        engine.get("touchreleased").call(LuaValue.valueOf(touchX),LuaValue.valueOf(touchY));
     }
 
     public void keyReleased(int key) {
-        LuaValue love = globals.get("love");
-        if (!love.get("keyreleased").isfunction()) {
+        if (!engine.get("keyreleased").isfunction()) {
             return;
         }
-        love.get("keyreleased").call(LuaValue.valueOf(getKey(key)));
+        engine.get("keyreleased").call(LuaValue.valueOf(getKey(key)));
     }
 
     public static void restart() {
@@ -159,6 +183,8 @@ public class LoveCanvas extends GameCanvas {
         setColor(0, 0, 0);
         g.fillRect(0, 0, getWidth(), getHeight());
         setColor(255, 255, 255);
+
+        //Call of lua-defined love.draw function
         globals.load("love.draw()").call();
         repaint();
     }

@@ -12,13 +12,7 @@ public class LoveThread {
                 public void run() {
                     Globals globals = JmePlatform.standardGlobals();
                     LuaValue engine = tableOf();
-                    engine.set("graphics", LoveGraphics.create());
-                    engine.set("window", LoveWindow.create());
-                    engine.set("timer", LoveTimer.create());
-                    engine.set("system", LoveSystem.create());
-                    engine.set("event", LoveEvent.create());
-                    engine.set("thread", LoveThread.create());
-
+                    LoveCanvas.requireDependencies(engine);
                     globals.set("require", new RequireFunction());
                     globals.set("love", engine);
 
