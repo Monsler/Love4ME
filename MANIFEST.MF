@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 MIDlet-1: Love2D,/logo.png,Main
 MIDlet-Name: Love2D
-MIDlet-Version: 0.4.7
+MIDlet-Version: 0.7.5
 MIDlet-Vendor: Monsler
 MicroEdition-Profile: MIDP-2.0
 MicroEdition-Configuration: CLDC-1.1
