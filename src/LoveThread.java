@@ -1,4 +1,5 @@
 import org.luaj.vm2.Globals;
+import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.jme.JmePlatform;
@@ -15,8 +16,11 @@ public class LoveThread {
                     LoveCanvas.requireDependencies(engine);
                     globals.set("require", new RequireFunction());
                     globals.set("love", engine);
-
-                    globals.load(code).call();
+                    try {
+                        globals.load(code).call();
+                    } catch (LuaError error) {
+                        LoveCanvas.showError(error.getMessage());
+                    }
                 }
             };
             out.set("start", new OneArgFunction() {

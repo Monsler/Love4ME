@@ -1,9 +1,10 @@
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.Lua;
+import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jme.JmePlatform;
 
-import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.*;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.midlet.MIDlet;
 
@@ -15,10 +16,11 @@ public class LoveCanvas extends GameCanvas {
     public static MIDlet currentMidlet;
     public static LoveCanvas currentCanvas;
     public static int touchX, touchY;
-
+    public static int canvasWidth, canvasHeight = 0;
     public static int fps;
     private int frames;
     private long lastTime = System.currentTimeMillis();
+    private static Command okButton;
 
     protected LoveCanvas(boolean suppressKeyEvents, MIDlet current) {
         super(suppressKeyEvents);
@@ -46,8 +48,12 @@ public class LoveCanvas extends GameCanvas {
         globals.set("love", engine);
 
         //Execution of main.lua
-        globals.load(mainFile).call();
-        globals.load("love.load()").call();
+        try {
+            globals.load(mainFile).call();
+            globals.load("love.load()").call();
+        } catch (LuaError error) {
+            showError(error.getMessage());
+        }
     }
 
     private String getKey(int key) {
@@ -125,10 +131,27 @@ public class LoveCanvas extends GameCanvas {
     public void pointerPressed(int x, int y) {
         touchX = x;
         touchY = y;
-        if (!engine.get("touchpressed").isfunction()) {
-            return;
+        try {
+            engine.get("touchpressed").call(LuaValue.valueOf(touchX), LuaValue.valueOf(touchY));
+        } catch (LuaError error) {
+            showError(error.getMessage());
         }
-        engine.get("touchpressed").call(LuaValue.valueOf(touchX),LuaValue.valueOf(touchY));
+    }
+
+    public static void showError(String errorText) {
+        Alert alert = new Alert("Lua error!", errorText, null, AlertType.ERROR);
+        alert.setTimeout(Alert.FOREVER);
+        okButton = new Command("Exit", Command.OK, 1);
+        alert.addCommand(okButton);
+        alert.setCommandListener(new CommandListener() {
+            public void commandAction(Command command, Displayable displayable) {
+                if (command == okButton) {
+                    LoveCanvas.currentMidlet.notifyDestroyed();
+                }
+            }
+        });
+        Main.display.setCurrent(alert, LoveCanvas.currentCanvas);
+
     }
 
     public static void requireDependencies(LuaValue loveTable) {
@@ -139,6 +162,7 @@ public class LoveCanvas extends GameCanvas {
         loveTable.set("thread", LoveThread.create());
         loveTable.set("timer", LoveTimer.create());
         loveTable.set("event", LoveEvent.create());
+        loveTable.set("math", LoveMath.create());
     }
 
     public void pointerReleased(int x, int y) {
@@ -171,6 +195,8 @@ public class LoveCanvas extends GameCanvas {
 
     public void paint(Graphics g) {
         graphics = g;
+        canvasWidth = graphics.getClipWidth();
+        canvasHeight = graphics.getClipHeight();
         ++frames;
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastTime >= 1000) {
@@ -185,7 +211,17 @@ public class LoveCanvas extends GameCanvas {
         setColor(255, 255, 255);
 
         //Call of lua-defined love.draw function
-        globals.load("love.draw()").call();
+        LuaValue love = globals.get("love");
+        if (love.istable()) {
+            LuaValue draw = love.get("draw");
+            if (draw.isfunction()) {
+                try {
+                    draw.call();
+                } catch (LuaError error) {
+                    showError(error.getMessage());
+                }
+            }
+        }
         repaint();
     }
 }

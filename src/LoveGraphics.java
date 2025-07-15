@@ -161,7 +161,7 @@ public class LoveGraphics {
         public Varargs invoke(Varargs args) {
             Image image = null;
             try {
-                image = Image.createImage("/game/"+args.arg(1).checkjstring());
+                image = Image.createImage("/outputs/game/" +args.arg(1).checkjstring());
             } catch (Exception e) {
                 LoveCanvas.currentMidlet.notifyDestroyed();
             }

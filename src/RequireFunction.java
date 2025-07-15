@@ -7,7 +7,7 @@ public class RequireFunction extends OneArgFunction {
     public LuaValue call(LuaValue luaValue) {
         String loader;
         try {
-            loader = ResourceReader.readResourceToString("game/"+luaValue.checkjstring().replace('.', '/')+".lua");
+            loader = ResourceReader.readResourceToString("game/" +luaValue.checkjstring().replace('.', '/')+".lua");
         } catch (IOException e) {
             return NIL;
         }

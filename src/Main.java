@@ -13,6 +13,6 @@ public class Main extends MIDlet {
     }
 
     protected void destroyApp(boolean b) {
-        LoveCanvas.globals.load("love.quit()").call();
+        LoveCanvas.globals.load("love.event.quit()").call();
     }
 }
