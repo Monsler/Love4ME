@@ -29,7 +29,7 @@ public class LoveCanvas extends GameCanvas {
         currentCanvas = this;
         setFullScreenMode(true);
         try {
-            mainFile = ResourceReader.readResourceToString("game/main.lua");
+            mainFile = ResourceReader.readResourceToString("src/main.lua");
         } catch (Exception ignored) {
             mainFile = null;
             currentMidlet.notifyDestroyed();
