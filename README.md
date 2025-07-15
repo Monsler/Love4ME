@@ -47,8 +47,9 @@ Love4ME/
 - Basic knowledge of Lua and Java
 
 ### 🛠 Build
+First, create folder called "outputs" and inside this folder create subfolder "src", where you can put your game's files.
 
-To build the project, simply run:
+Second, to build the project, simply run:
 
 ```bash
 buildjar.bat
