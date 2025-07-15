@@ -22,20 +22,28 @@ public class LoveMath {
 
     public static class Random extends VarArgFunction {
         public Varargs invoke(Varargs args) {
-            LuaValue min = args.arg(1);
-            LuaValue max = args.arg(2);
             java.util.Random random = new java.util.Random();
             random.setSeed(System.currentTimeMillis());
-            if (max.isnil()) {
-                int maxInt = min.checkint();
-                return LuaValue.valueOf(random.nextInt(maxInt));
-            } else if (!max.isnil() && !min.isnil()) {
-                int minInt = min.checkint();
-                int maxInt = max.checkint();
-                return  LuaValue.valueOf(random.nextInt((maxInt-minInt)+1)+maxInt);
+            int n = args.narg();
+            if (n == 0) {
+                return LuaValue.valueOf(random.nextDouble());
+            } else if (n == 1) {
+                int max = args.arg(1).checkint();
+                return LuaValue.valueOf(random.nextInt(max) + 1);
             } else {
-                return LuaValue.valueOf(random.nextInt());
+                int min = args.arg(1).checkint();
+                int max = args.arg(2).checkint();
+                return LuaValue.valueOf(random.nextInt((max - min + 1)) + min);
             }
+        }
+    }
+
+    public static class Noise extends VarArgFunction {
+        public Varargs invoke(Varargs args) {
+            double x = args.arg(1).checkdouble();
+            double y = args.arg(2).checkdouble();
+            double result = SimplexNoise.noise(x, y);
+            return LuaValue.valueOf(result);
         }
     }
 
@@ -45,6 +53,7 @@ public class LoveMath {
         mathTable.set("colorFromBytes", new ColorFromBytes());
         mathTable.set("colorToBytes", new ColorToBytes());
         mathTable.set("random", new Random());
+        mathTable.set("noise", new Noise());
         return mathTable;
     }
 }

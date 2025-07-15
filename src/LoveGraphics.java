@@ -149,11 +149,17 @@ public class LoveGraphics {
 
     public static class SetColor extends VarArgFunction {
         public Varargs invoke(Varargs args) {
-            double r = args.arg(1).checkdouble()*255;
-            double g = args.arg(2).checkdouble()*255;
-            double b = args.arg(3).checkdouble()*255;
-            LoveCanvas.setColor((int)r, (int)g, (int)b);
+            double r = sanitize(args.arg(1).optdouble(1.0)); // по умолчанию белый
+            double g = sanitize(args.arg(2).optdouble(1.0));
+            double b = sanitize(args.arg(3).optdouble(1.0));
+            LoveCanvas.setColor((int) (r * 255), (int) (g * 255), (int) (b * 255));
             return LuaValue.NIL;
+        }
+
+        private double sanitize(double v) {
+            if (Double.isNaN(v) || Double.isInfinite(v)) return 1.0; // белый
+            if (v < 0.0) return 0.0;
+            return Math.min(v, 1.0);
         }
     }
 

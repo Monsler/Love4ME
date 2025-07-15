@@ -50,7 +50,11 @@ public class LoveCanvas extends GameCanvas {
         //Execution of main.lua
         try {
             globals.load(mainFile).call();
-            globals.load("love.load()").call();
+            if (globals.get("love").istable()) {
+                if (!globals.get("love").get("load").isnil()) {
+                    globals.get("love").get("load").call();
+                }
+            }
         } catch (LuaError error) {
             showError(error.getMessage());
         }
